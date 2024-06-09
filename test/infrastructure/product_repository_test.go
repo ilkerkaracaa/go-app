@@ -1,18 +1,37 @@
 package infrastructure
 
 import (
+	"context"
+	"fmt"
+	"goapp/common/postgresql"
+	"goapp/datalayer"
+	"os"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-func TestAdd(t *testing.T) {
-	t.Run("TestAdd", func(t *testing.T) {
-		actual := Add(10, 20)
-		assert.Equal(t, 30, actual)
+var productRepositorty datalayer.IProductRepository
+var dbPool *pgxpool.Pool
+
+func TestMain(m *testing.M) {
+	ctx := context.Background()
+	dbPool = postgresql.GetConnectionPool(ctx, postgresql.Config{
+		Host:                  "localhost",
+		Port:                  "6432",
+		DbName:                "goapp",
+		UserName:              "postgres",
+		Password:              "postgres",
+		MaxConnections:        "10",
+		MaxConnectionIdleTime: "30s",
 	})
+	productRepositorty = datalayer.NewProductRepository(dbPool)
+	exitCode := m.Run()
+	os.Exit(exitCode)
 }
 
-func Add(x int, y int) int {
-	return x + y
+func TestGetAllProduct(t *testing.T) {
+	fmt.Println("Test get all products")
+	fmt.Println(productRepositorty)
+	fmt.Println(dbPool)
 }
