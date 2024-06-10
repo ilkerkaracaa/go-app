@@ -26,12 +26,12 @@ func TestMain(m *testing.M) {
 		MaxConnectionIdleTime: "30s",
 	})
 	productRepositorty = datalayer.NewProductRepository(dbPool)
+	fmt.Println("Before tests")
 	exitCode := m.Run()
+	fmt.Println("After tests")
 	os.Exit(exitCode)
 }
 
 func TestGetAllProduct(t *testing.T) {
-	fmt.Println("Test get all products")
-	fmt.Println(productRepositorty)
-	fmt.Println(dbPool)
+
 }
