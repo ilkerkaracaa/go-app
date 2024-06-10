@@ -13,9 +13,10 @@ import (
 
 var productRepositorty datalayer.IProductRepository
 var dbPool *pgxpool.Pool
+var ctx context.Context
 
 func TestMain(m *testing.M) {
-	ctx := context.Background()
+	ctx = context.Background()
 	dbPool = postgresql.GetConnectionPool(ctx, postgresql.Config{
 		Host:                  "localhost",
 		Port:                  "6432",
@@ -32,6 +33,14 @@ func TestMain(m *testing.M) {
 	os.Exit(exitCode)
 }
 
+func setup(ctx context.Context, dbPool *pgxpool.Pool) {
+	TestDataInitialize(ctx, dbPool)
+}
+func clear(ctx context.Context, dbPool *pgxpool.Pool) {
+	TruncateTestData(ctx, dbPool)
+}
 func TestGetAllProduct(t *testing.T) {
-
+	setup(ctx, dbPool)
+	fmt.Println("Test all products")
+	clear(ctx, dbPool)
 }
