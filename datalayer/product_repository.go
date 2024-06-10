@@ -4,12 +4,14 @@ import (
 	"context"
 	"goapp/domain"
 
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/labstack/gommon/log"
 )
 
 type IProductRepository interface {
 	GetAllProducts() []domain.Product
+	GetAllProductsByStore(storeName string) []domain.Product
 }
 
 type ProductRepository struct {
@@ -30,6 +32,22 @@ func (productRepository *ProductRepository) GetAllProducts() []domain.Product {
 		log.Error("Query not working", err)
 		return []domain.Product{}
 	}
+	return extractProductsFromRows(productRows)
+}
+
+func (productRepository *ProductRepository) GetAllProductsByStore(storeName string) []domain.Product {
+
+	ctx := context.Background()
+	getProductsByStoreNameQuery := `Select * From products where store = $1`
+	productRows, err := productRepository.dbPool.Query(ctx, getProductsByStoreNameQuery, storeName)
+	if err != nil {
+		log.Error("Query not working", err)
+		return []domain.Product{}
+	}
+	return extractProductsFromRows(productRows)
+}
+
+func extractProductsFromRows(productRows pgx.Rows) []domain.Product {
 	var products = []domain.Product{}
 	var id int64
 	var name string
