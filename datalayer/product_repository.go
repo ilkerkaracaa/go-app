@@ -93,6 +93,9 @@ func (productRepository *ProductRepository) GetById(productId int64) (domain.Pro
 	var discount float32
 	var store string
 	err := queryRow.Scan(&id, &name, &price, &discount, &store)
+	if err != nil && err.Error() == "no rows in result set" {
+		return domain.Product{}, errors.New(fmt.Sprintf("Product not found with id %d", productId))
+	}
 	if err != nil {
 		return domain.Product{}, errors.New(fmt.Sprintf("Error getting with id %d", productId))
 	}

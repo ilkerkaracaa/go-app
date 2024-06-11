@@ -151,7 +151,7 @@ func TestGetProductById(t *testing.T) {
 			Discount: 22.0,
 			Store:    "ABC TECH",
 		}, product)
-		assert.Equal(t, "Error getting with id 5", err.Error())
+		assert.Equal(t, "Product not found with id 5", err.Error())
 	})
 	clear(ctx, dbPool)
 }
