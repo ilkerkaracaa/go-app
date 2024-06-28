@@ -11,7 +11,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// deneme
 func main() {
 	ctx := context.Background()
 	server := echo.New()
